@@ -1,4 +1,4 @@
-export { default as App } from './App';
+export { default as App, ThemeContext } from './App';
 export * from './components/atomos/Icono';
 export * from './components/moleculas/Btnsave';
 export * from './components/organismos/sidebar/Sidebar';

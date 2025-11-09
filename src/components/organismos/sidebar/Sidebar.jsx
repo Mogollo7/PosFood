@@ -1,9 +1,15 @@
 import styled from "styled-components";
-import { v, UserAuth, LinksArray, SecondarylinksArray } from "../../../index";
+import { v, UserAuth, LinksArray, SecondarylinksArray, ThemeContext } from "../../../index";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
 
 export function Sidebar({ state, setState }) {
     const { user } = UserAuth();
+    const { setTheme, theme } = useContext(ThemeContext);
+    
+    const handleToggleTheme = () => {
+        setTheme(theme === "light" ? "Dark" : "light");
+    };
     return (
         <Main isOpen={state}>
             <span className="Sidebarbutton" onClick={() => setState(!state)}>
@@ -25,14 +31,33 @@ export function Sidebar({ state, setState }) {
                     </div>
                 ))}
                 <Divider />
-                {SecondarylinksArray.map(({ icon, label, to }) => (
-                    <div className={state ? "LinkContainer active" : "LinkContainer"}
-                        key={label}>
-                        <NavLink to={to} className={({ isActive }) => `Links${isActive ? ` active` : ``}`}>                        <div className="Linkicon">{icon}</div>
-                            { state && <span>{label}</span>}
-                        </NavLink>
-                    </div>
-                ))}
+                {SecondarylinksArray.map(({ icon, label, to }) => {
+                    // Si es el botón "Acerca de", cambiar tema en lugar de navegar
+                    if (to === "/acercade") {
+                        return (
+                            <div className={state ? "LinkContainer active" : "LinkContainer"}
+                                key={label}>
+                                <div 
+                                    onClick={handleToggleTheme}
+                                    className="Links"
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <div className="Linkicon">{icon}</div>
+                                    { state && <span>{label}</span>}
+                                </div>
+                            </div>
+                        );
+                    }
+                    // Para otros botones, comportamiento normal
+                    return (
+                        <div className={state ? "LinkContainer active" : "LinkContainer"}
+                            key={label}>
+                            <NavLink to={to} className={({ isActive }) => `Links${isActive ? ` active` : ``}`}>                        <div className="Linkicon">{icon}</div>
+                                { state && <span>{label}</span>}
+                            </NavLink>
+                        </div>
+                    );
+                })}
             </Container>
         </Main>
     );
