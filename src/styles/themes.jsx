@@ -31,7 +31,8 @@ export const Light ={
     slideroffset:"0.3em",
     sizeoficon:"1.4em",
     colorSubtitle:"#2c2c2c",
-    colorScroll:"#cac9ca"
+    colorScroll:"#cac9ca",
+    placeholder:"#5b5b5b"
 }
 export const Dark = {
     bgtgderecha:"#21252B",
@@ -66,6 +67,7 @@ export const Dark = {
     slideroffset:"0.3em",
     sizeoficon:"1.4em",
     colorSubtitle:"#b7b7b7",
-    colorScroll:"#4a4a4a"
+    colorScroll:"#4a4a4a",
+    placeholder:"#b7b7b7"
 
   };
