@@ -7,6 +7,9 @@ import {
 import { MdOutlineAnalytics } from "react-icons/md";
 import {RiDashboard3Line} from "react-icons/ri"
 import {TbPig} from "react-icons/tb"
+import { MdDarkMode } from "react-icons/md";
+import { CiLogout } from "react-icons/ci";
+
 
 export const DesplegableUser = [
   {
@@ -70,13 +73,13 @@ export const LinksArray = [
 ];
 export const SecondarylinksArray = [
   {
-    label: "Configuración",
-    icon: <AiOutlineSetting />,
+    label: "Logout",
+    icon: <CiLogout />,
     to: "/configurar",
   },
   {
-    label: "Acerca de",
-    icon: <TbPig />,
+    label: "Tema",
+    icon: <MdDarkMode />,
     to: "/acercade",
   },
 ];

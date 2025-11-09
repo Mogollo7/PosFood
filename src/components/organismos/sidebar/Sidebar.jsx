@@ -1,14 +1,25 @@
 import styled from "styled-components";
-import { v, UserAuth, LinksArray, SecondarylinksArray, ThemeContext } from "../../../index";
-import { NavLink } from "react-router-dom";
+import { v, UserAuth, LinksArray, SecondarylinksArray, ThemeContext, useAuthStore } from "../../../index";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 
 export function Sidebar({ state, setState }) {
     const { user } = UserAuth();
     const { setTheme, theme } = useContext(ThemeContext);
+    const { signout } = useAuthStore();
+    const navigate = useNavigate();
     
     const handleToggleTheme = () => {
         setTheme(theme === "light" ? "Dark" : "light");
+    };
+
+    const handleLogout = async () => {
+        try {
+            await signout();
+            navigate("/login");
+        } catch (error) {
+            console.error("Error al cerrar sesión:", error);
+        }
     };
     return (
         <Main isOpen={state}>
@@ -32,13 +43,29 @@ export function Sidebar({ state, setState }) {
                 ))}
                 <Divider />
                 {SecondarylinksArray.map(({ icon, label, to }) => {
-                    // Si es el botón "Acerca de", cambiar tema en lugar de navegar
+                    // Si es el botón "Tema", cambiar tema en lugar de navegar
                     if (to === "/acercade") {
                         return (
                             <div className={state ? "LinkContainer active" : "LinkContainer"}
                                 key={label}>
                                 <div 
                                     onClick={handleToggleTheme}
+                                    className="Links"
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <div className="Linkicon">{icon}</div>
+                                    { state && <span>{label}</span>}
+                                </div>
+                            </div>
+                        );
+                    }
+                    // Si es el botón "Logout", cerrar sesión
+                    if (label === "Logout") {
+                        return (
+                            <div className={state ? "LinkContainer active" : "LinkContainer"}
+                                key={label}>
+                                <div 
+                                    onClick={handleLogout}
                                     className="Links"
                                     style={{ cursor: "pointer" }}
                                 >
