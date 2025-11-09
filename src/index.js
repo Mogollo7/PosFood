@@ -1,6 +1,7 @@
 export { default as App } from './App';
 export * from './components/atomos/Icono';
 export * from './components/moleculas/Btnsave';
+export * from './components/organismos/sidebar/Sidebar';
 export * from './components/templates/HomeTemplate';
 export * from './components/templates/LoginTemplate';
 export * from './context/AuthContent';
@@ -13,3 +14,6 @@ export * from './store/AuthStore';
 export * from './styles/themes';
 export * from './styles/variables';
 export * from './supabase/supabase.config';
+export * from './styles/breakpoints';
+export * from './components/organismos/Menuambur';
+export * from './util/dataEstatica';
