@@ -37,7 +37,7 @@ export const Light ={
 export const Dark = {
     bgtgderecha:"#21252B",
     body: "#202020",
-    text: "#fff",
+    text: "#000000",
     bodyRgba: "32,32,32",
     textRgba: "255, 255, 255",
     carouselColor: "#9955ff",
