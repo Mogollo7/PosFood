@@ -1,16 +1,16 @@
+import EntradaBebidas from "../organismos/EntradaLista.jsx";
 import styled from "styled-components";
-import { PerfilForm } from "../organismos/PerfilForm";
 import { v } from "../../styles/variables";
 
-export function HomeTemplate({ userEmail, userMetadata }) {
+export default function EntradaTemplate() {
   return (
-    <Container>
-      <PerfilForm userEmail={userEmail} userMetadata={userMetadata} />
-    </Container>
+    <EntradaBebidasWrapper>
+      <EntradaBebidas />
+    </EntradaBebidasWrapper>
   );
 }
 
-const Container = styled.div`
+const EntradaBebidasWrapper = styled.div`
   min-height: 100vh;
   padding: ${v.xlSpacing};
   background: ${(props) => props.theme.bg};

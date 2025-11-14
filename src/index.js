@@ -13,6 +13,10 @@ export * from './hooks/ProtectedRoute';
 export * from './main';
 export * from './pages/Home';
 export * from './pages/Login';
+export * from './pages/Entrada';
+export * from './pages/Bebida';
+export * from './pages/Postre';
+
 export * from './routers/routes';
 export * from './store/AuthStore';
 export * from './styles/themes';

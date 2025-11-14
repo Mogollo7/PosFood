@@ -1,16 +1,16 @@
+import PostreLista from "../organismos/PostreLista.jsx";
 import styled from "styled-components";
-import { PerfilForm } from "../organismos/PerfilForm";
 import { v } from "../../styles/variables";
 
-export function HomeTemplate({ userEmail, userMetadata }) {
+export default function PostreTemplate() {
   return (
-    <Container>
-      <PerfilForm userEmail={userEmail} userMetadata={userMetadata} />
-    </Container>
+    <PostreListaWrapper>
+      <PostreLista />
+    </PostreListaWrapper>
   );
 }
 
-const Container = styled.div`
+const PostreListaWrapper = styled.div`
   min-height: 100vh;
   padding: ${v.xlSpacing};
   background: ${(props) => props.theme.bg};
