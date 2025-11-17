@@ -1,4 +1,13 @@
-import { MyRoutes, Sidebar, Device, Light, Dark, AuthContextProvider, Menuambur } from "./index";
+import { Light, Dark } from "./styles/themes";
+import { Device } from "./styles/breakpoints";
+import { MyRoutes } from "./routers/routes";
+import { Sidebar } from "./components/organismos/sidebar/Sidebar";
+import { Menuambur } from "./components/organismos/Menuambur";
+import GlobalFooter from "./components/organismos/GlobalFooter";
+import { AuthContextProvider } from "./context/AuthContent";
+import { CartProvider } from "./context/CartContext";
+import { OrdersProvider } from "./context/OrdersContext";
+import { CartOrdersWrapper } from "./components/wrappers/CartOrdersWrapper";
 import { createContext, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { styled } from "styled-components";
@@ -17,10 +26,13 @@ function App() {
       <ThemeContext.Provider value={{ setTheme, theme }}>
         <ThemeProvider theme={themeStyle}>
           <AuthContextProvider>
-            <Container className={sidebarOpen ? "" : ""}>
+            <OrdersProvider>
+              <CartProvider>
+                <CartOrdersWrapper>
+                <Container className={sidebarOpen ? "" : ""}>
               {!isLoginPage && (
                 <>
-                  < div className="ContentSidebar">
+                  <div className="ContentSidebar">
                     <Sidebar state={sidebarOpen} setState={() => setSidebarOpen(!sidebarOpen)}/>
                   </div>
                   <div className="ContentMenuambur">
@@ -33,6 +45,10 @@ function App() {
               </Containerbody>
             </Container>
             <ReactQueryDevtools initialIsOpen={true} />
+            {!isLoginPage && <GlobalFooter />}
+                </CartOrdersWrapper>
+              </CartProvider>
+            </OrdersProvider>
           </AuthContextProvider>
         </ThemeProvider>
       </ThemeContext.Provider>

@@ -31,12 +31,13 @@ export const Light ={
     slideroffset:"0.3em",
     sizeoficon:"1.4em",
     colorSubtitle:"#2c2c2c",
-    colorScroll:"#cac9ca"
+    colorScroll:"#cac9ca",
+    placeholder:"#5b5b5b"
 }
 export const Dark = {
     bgtgderecha:"#21252B",
     body: "#202020",
-    text: "#fff",
+    text: "#000000",
     bodyRgba: "32,32,32",
     textRgba: "255, 255, 255",
     carouselColor: "#9955ff",
@@ -51,10 +52,10 @@ export const Dark = {
     fontButton: "0.875em",
     navHeight: "5rem",
     whiteBg:"#DAC1FF",
-    bg: "#2C2C2E",
+    bg: "#ffff",
     bgAlpha: "rgba(0,0,0,.3)",
     bg2: "rgb(30,30,30)",
-    bg3: "#2C2C2E",
+    bg3: "#ffffff",
     primary: "rgb(52, 131, 235)",
     bg4:"#4E4E50",
     bg5:"#BF94FF",
@@ -66,6 +67,7 @@ export const Dark = {
     slideroffset:"0.3em",
     sizeoficon:"1.4em",
     colorSubtitle:"#b7b7b7",
-    colorScroll:"#4a4a4a"
+    colorScroll:"#4a4a4a",
+    placeholder:"#b7b7b7"
 
   };

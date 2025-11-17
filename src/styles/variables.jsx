@@ -24,7 +24,13 @@ import { BsBarChartLine } from "react-icons/bs";
 import { AiOutlineCalculator } from "react-icons/ai";
 import { BsCalendarCheck } from "react-icons/bs";
 import {IoIosArrowForward} from "react-icons/io"
-import fondo from "../assets/fondo1.svg";
+import { FaApple } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+
+
+import fondo from "../assets/OIP.jpg"
+import imgHome from "../assets/HOME.webp";
 export const v = {
   sidebarWidth: `300px`,
   sidebarWidthInitial: `10vw`,
@@ -70,6 +76,7 @@ export const v = {
   balance: FaBalanceScale,
   logo: logo,
   iconogoogle: BsGoogle,
+  iconoApple: FaApple,
   iconocerrar: RiCloseLine,
   iconoguardar: BiSave,
   iconoayuda: BsQuestionCircle,
@@ -79,6 +86,9 @@ export const v = {
   iconocalculadora: AiOutlineCalculator,
   iconocheck: BsCalendarCheck,
   imagenfondo: fondo,
+  home: imgHome,
   colorSecundario: `#DAC1FF`,
-  iconoflechaderecha: IoIosArrowForward
+  iconoflechaderecha: IoIosArrowForward,
+  delete: MdDelete,
+  edit: FaEdit   
 };
