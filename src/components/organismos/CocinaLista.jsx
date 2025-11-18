@@ -262,7 +262,7 @@ const Container = styled.div`
     background-color: #f8f9fa;
     padding: 12px;
     border-radius: 8px;
-    border-left: 4px solid #007bff;
+    border-left: 4px solid #7a7a7a;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -275,7 +275,7 @@ const Container = styled.div`
   }
 
   .item-cantidad {
-    background-color: #007bff;
+    background-color: #7a7a7a;
     color: white;
     padding: 4px 10px;
     border-radius: 12px;
@@ -360,23 +360,27 @@ const Container = styled.div`
   }
 
   .btn-preparar {
-    background-color: #4ecdc4;
+    background-color: #000000;
     color: white;
   }
 
   .btn-preparar:hover {
-    background-color: #45b8b0;
+    background-color: #ffffff;
     transform: translateY(-2px);
+    color: #000000;
+    border: 2px solid #000000;
   }
 
   .btn-listo {
-    background-color: #95e1d3;
-    color: #333;
+    background-color: #000000;
+    color: #ffffff;
   }
 
   .btn-listo:hover {
-    background-color: #7dd3c1;
+    background-color: #ffffff;
     transform: translateY(-2px);
+    color: #000000;
+    border: 2px solid #000000;
   }
 
   .no-pedidos {

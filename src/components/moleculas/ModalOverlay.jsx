@@ -91,7 +91,7 @@ const ModalOverlay = ({ isOpen, onClose, selectedItem }) => {
               <p>{selectedItem.descripcion}</p>
             </div>
             <div className="costo">
-              <div className="namecosto">Costo: </div>
+              <div className="namecosto1">Costo: </div>
               <input
                 type="number"
                 className="valor-input"
@@ -162,19 +162,23 @@ const ModalContent = styled.div`
 }
 
 .namecosto {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+.namecosto1 {
   font-size: 2.375rem;
   font-weight: 500;
 }
 
 .valor {
-  font-size: 2.375rem;
+  font-size: 2rem;
   font-weight: 500;
 }
 
 .valor-input {
   font-size: 2.375rem;
   font-weight: 500;
-  border: 2px solid #ddd;
+  border: 2px solid #ffffff;
   border-radius: 8px;
   padding: 5px 10px;
   width: 200px;
@@ -191,10 +195,9 @@ const ModalContent = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
   padding: 10px;
   border-radius: 8px;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
 }
 
 .descripcion-producto {
@@ -204,14 +207,15 @@ const ModalContent = styled.div`
 }
 .descripcion textarea {   
   width: 700px;
-  height: 240px;
+  height: 220px;
   padding: 12px;              /* espacio interno */
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
   resize: none;               /* evita que el usuario cambie el tamaño */
   text-align: left; 
-  margin-top: 50px;          /* asegura alineación izquierda */
+  margin-top: 20px;    
+  margin-bottom:20px;      /* asegura alineación izquierda */
 }
 
 

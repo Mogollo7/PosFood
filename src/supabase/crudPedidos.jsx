@@ -69,12 +69,32 @@ export const obtenerPedidos = async () => {
     // Obtener todos los pedidos sin relaciones complejas primero
     const { data: pedidos, error: pedidosError } = await supabase
       .from("pedidos")
-      .select("id, numero, total, estado, fecha")
+      .select("id, numero, total, estado, fecha, tipo_pedido, numero_mesa")
       .order("fecha", { ascending: false });
 
     if (pedidosError) {
       console.error("Error al obtener pedidos:", pedidosError);
       throw pedidosError;
+    }
+
+    // Obtener domicilios asociados (si existen) en una sola consulta
+    let domiciliosMap = {}
+    try {
+      const pedidoIds = (pedidos || []).map((p) => p.id)
+      if (pedidoIds.length > 0) {
+        const { data: domicilios } = await supabase
+          .from('pedidos_domicilio')
+          .select('pedido_id, direccion, nombre_remitente, telefono_remitente, costo_domicilio')
+          .in('pedido_id', pedidoIds)
+
+        domiciliosMap = (domicilios || []).reduce((acc, d) => {
+          acc[d.pedido_id] = d
+          return acc
+        }, {})
+      }
+    } catch (err) {
+      console.warn('No se pudo obtener pedidos_domicilio:', err)
+      domiciliosMap = {}
     }
 
     // Para cada pedido, obtener sus items
@@ -96,6 +116,8 @@ export const obtenerPedidos = async () => {
               estado: pedido.estado,
               imagen: null,
               items: [],
+              tipo_pedido: pedido.tipo_pedido,
+              numero_mesa: pedido.numero_mesa,
             };
           }
 
@@ -111,7 +133,8 @@ export const obtenerPedidos = async () => {
               if (productoError) {
                 console.error(`Error al obtener producto ${item.producto_id}:`, productoError);
                 return {
-                  id: item.producto_id,
+                  id: item.id, // ID de pedido_items (IMPORTANTE para borrar)
+                  producto_id: item.producto_id,
                   nombre: "Producto no encontrado",
                   cantidad: item.cantidad,
                   precio: parseFloat(item.precio_unitario),
@@ -122,7 +145,8 @@ export const obtenerPedidos = async () => {
               }
 
               return {
-                id: item.producto_id,
+                id: item.id, // ID de pedido_items (IMPORTANTE para borrar)
+                producto_id: item.producto_id,
                 nombre: producto.nombre,
                 cantidad: item.cantidad,
                 precio: parseFloat(item.precio_unitario),
@@ -139,8 +163,12 @@ export const obtenerPedidos = async () => {
             total: parseFloat(pedido.total),
             date: pedido.fecha,
             estado: pedido.estado,
+            tipo_pedido: pedido.tipo_pedido,
+            numero_mesa: pedido.numero_mesa,
             imagen: itemsConProductos[0]?.imagen_url || null,
             items: itemsConProductos,
+            // Adjuntar domicilio si existe
+            domicilio: domiciliosMap[pedido.id] || null,
           };
         } catch (err) {
           console.error(`Error procesando pedido ${pedido.id}:`, err);
@@ -206,7 +234,8 @@ export const obtenerPedidoPorId = async (pedido_id) => {
         if (productoError) {
           console.error(`Error al obtener producto ${item.producto_id}:`, productoError);
           return {
-            id: item.producto_id,
+            id: item.id, // ID de pedido_items (IMPORTANTE para borrar)
+            producto_id: item.producto_id,
             nombre: "Producto no encontrado",
             cantidad: item.cantidad,
             precio: parseFloat(item.precio_unitario),
@@ -217,7 +246,8 @@ export const obtenerPedidoPorId = async (pedido_id) => {
         }
 
         return {
-          id: item.producto_id,
+          id: item.id, // ID de pedido_items (IMPORTANTE para borrar)
+          producto_id: item.producto_id,
           nombre: producto.nombre,
           cantidad: item.cantidad,
           precio: parseFloat(item.precio_unitario),
@@ -237,6 +267,21 @@ export const obtenerPedidoPorId = async (pedido_id) => {
       estado: pedido.estado,
       items: itemsConProductos,
     };
+
+    // Adjuntar domicilio si existe
+    try {
+      const { data: domicilioData, error: domErr } = await supabase
+        .from('pedidos_domicilio')
+        .select('direccion, nombre_remitente, telefono_remitente, costo_domicilio')
+        .eq('pedido_id', pedido_id)
+        .single()
+
+      if (!domErr && domicilioData) {
+        pedidoFormateado.domicilio = domicilioData
+      }
+    } catch (err) {
+      console.warn('Error obteniendo domicilio para pedido:', err)
+    }
 
     return pedidoFormateado;
   } catch (err) {

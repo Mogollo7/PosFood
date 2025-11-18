@@ -81,7 +81,7 @@ export function PerfilForm() {
                   </div>
                   <div className="descripcion">
                     <textarea 
-                      defaultValue={`Fecha: ${new Date(pedidoEditando.date).toLocaleString()}\nEstado: ${pedidoEditando.estado || 'Pendiente'}`}
+                      defaultValue={`Fecha: ${new Date(pedidoEditando.date).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}\nEstado: ${pedidoEditando.estado || 'Pendiente'}`}
                       readOnly
                     ></textarea>
                   </div>
@@ -332,7 +332,7 @@ const Container = styled.div`
     margin-bottom: 10px;
     background: white;
     border-radius: 6px;
-    border-left: 3px solid #007bff;
+    border-left: 3px solid #555;
   }
 
   .item-modal-nombre {
@@ -377,7 +377,7 @@ const Container = styled.div`
 
   /* Delete = rojo */
   .cadDetails .delete {
-    background-color: #e63946;
+    background-color: #ff0015;
   }
 
   .header-pedidos {

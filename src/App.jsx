@@ -20,6 +20,17 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
+  // Rutas en las que NO se debe mostrar el footer (incluye subrutas)
+  const excludedFooterPaths = [
+    "/login",
+    "/cocina",
+    "/movimientos",
+    "/informes",
+    "/dashboard",
+  ];
+  const hideFooter = excludedFooterPaths.some((p) =>
+    location.pathname.startsWith(p)
+  );
 
   return (
     <>
@@ -45,7 +56,7 @@ function App() {
               </Containerbody>
             </Container>
             <ReactQueryDevtools initialIsOpen={true} />
-            {!isLoginPage && <GlobalFooter />}
+            {!hideFooter && <GlobalFooter />}
                 </CartOrdersWrapper>
               </CartProvider>
             </OrdersProvider>

@@ -7,6 +7,8 @@ import { Cocina } from "../pages/Cocina";
 import DashboardHome from "../pages/DashboardHome";
 import DashboardVentas from "../pages/DashboardVentas";
 import DashboardPedidos from "../pages/DashboardPedidos";
+import Movimientos from "../pages/Movimientos";
+import Informes from "../pages/Informes";
 
 export function MyRoutes() {
   const { user } = UserAuth();
@@ -17,6 +19,7 @@ export function MyRoutes() {
       <Route path="/postre" element={<Postre />} />
       <Route path="/pizza" element={<Pizza />} />
       <Route path="/cocina" element={<Cocina />} />
+      <Route path="/movimientos" element={<Movimientos />} />
 
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoute user={user} redirectTo="/login" />}>
@@ -24,6 +27,7 @@ export function MyRoutes() {
         <Route path="/dashboard" element={<DashboardHome />} />
         <Route path="/dashboard/ventas" element={<DashboardVentas />} />
         <Route path="/dashboard/pedidos" element={<DashboardPedidos />} />
+        <Route path="/informes" element={<Informes />} />
       </Route>
     </Routes>
   );

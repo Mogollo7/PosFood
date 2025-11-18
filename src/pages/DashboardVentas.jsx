@@ -1,11 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import './DashboardVentas.css'
+import { supabase } from '../supabase/supabase.config'
+import { format } from 'date-fns'
+import { FaArrowUp, FaArrowDown } from 'react-icons/fa'
 
 function DashboardVentas() {
     const navigate = useNavigate()
     const [activePage, setActivePage] = useState('ventas')
+
+    // Capacidad máxima de mesas
+    const MAX_MESAS = 11
+    const mesasOcupadas = 7
 
     const ventasData = [
         { date: 'Nov 21', transferencia: 1000, efectivo: 900 },
@@ -15,57 +22,84 @@ function DashboardVentas() {
         { date: 'Nov 25', transferencia: 1250, efectivo: 1050 },
         { date: 'Nov 26', transferencia: 1400, efectivo: 1200 }
     ]
+    const [ventasDataState, setVentasDataState] = useState([])
+    const [ingresosDataState, setIngresosDataState] = useState([])
+    const [flujoDataState, setFlujoDataState] = useState([])
 
-    const ingresosData = [
-        { date: 'Nov 21', ingresos: 30 },
-        { date: 'Nov 22', ingresos: 55 },
-        { date: 'Nov 23', ingresos: 75 },
-        { date: 'Nov 24', ingresos: 65 },
-        { date: 'Nov 25', ingresos: 85 },
-        { date: 'Nov 26', ingresos: 100 }
-    ]
+    useEffect(() => {
+        async function fetchVentas() {
+            try {
+                // Obtener pedidos con datos necesarios
+                const { data: pedidos, error: pedidosError } = await supabase
+                    .from('pedidos')
+                    .select('id, numero, total, fecha, tipo_pago, tipo_pedido')
+                    .order('fecha', { ascending: true })
+                    .limit(1000)
 
-    const flujoData = [
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '+19000', tipo: 'Domicilio', color: '#4ade80' },
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '-19000', tipo: 'Domicilio', color: '#ef4444' },
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '-19000', tipo: 'Domicilio', color: '#ef4444' },
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '-19000', tipo: 'Domicilio', color: '#ef4444' },
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '+19000', tipo: 'Domicilio', color: '#4ade80' },
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '-19000', tipo: 'Domicilio', color: '#ef4444' },
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '-19000', tipo: 'Domicilio', color: '#ef4444' },
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '+19000', tipo: 'Domicilio', color: '#4ade80' },
-        { date: 'Nov 21, 2017', id: '#D1874758756', monto: '-19000', tipo: 'Domicilio', color: '#ef4444' }
-    ]
+                if (pedidosError) {
+                    console.error('Error al obtener pedidos:', pedidosError)
+                    return
+                }
+
+                // Agrupar por fecha y tipo_pago
+                const ventasMap = {}
+                const ingresosMap = {}
+                const pedidosById = {}
+                pedidos.forEach((p) => {
+                    const day = p.fecha ? format(new Date(p.fecha), 'yyyy-MM-dd') : 'Sin fecha'
+                    ventasMap[day] = ventasMap[day] || { transferencia: 0, efectivo: 0 }
+                    ingresosMap[day] = ingresosMap[day] || 0
+                    const total = parseFloat(p.total || 0)
+                    if (p.tipo_pago === 'transferencia') ventasMap[day].transferencia += total
+                    else if (p.tipo_pago === 'efectivo') ventasMap[day].efectivo += total
+
+                    ingresosMap[day] += 1
+                    pedidosById[p.id] = p
+                })
+
+                const ventasArr = Object.keys(ventasMap).sort().map((d) => ({ date: d, ...ventasMap[d] }))
+                const ingresosArr = Object.keys(ingresosMap).sort().map((d) => ({ date: d, ingresos: ingresosMap[d] }))
+
+                // Obtener pagos para flujo de caja
+                const { data: pagos, error: pagosError } = await supabase.from('pago').select('id, pedido_id, estado, fecha').order('fecha', { ascending: false }).limit(100)
+                if (pagosError) {
+                    console.error('Error al obtener pagos:', pagosError)
+                }
+
+                const flujoArr = (pagos || []).map((pago) => {
+                    const pedido = pedidosById[pago.pedido_id] || {}
+                    const monto = pedido.total ? parseFloat(pedido.total) : 0
+                    const sign = pago.estado === 'pago' ? '+' : '-'
+                    return {
+                        date: pago.fecha ? format(new Date(pago.fecha), 'yyyy-MM-dd HH:mm') : '',
+                        id: `#${pedido.numero || pago.pedido_id}`,
+                        monto: `${sign}${monto}`,
+                        tipo: pedido.tipo_pedido || 'N/A',
+                        color: pago.estado === 'pago' ? '#4ade80' : '#ef4444',
+                    }
+                })
+
+                setVentasDataState(ventasArr)
+                setIngresosDataState(ingresosArr)
+                setFlujoDataState(flujoArr)
+            } catch (err) {
+                console.error(err)
+            }
+        }
+
+        fetchVentas()
+    }, [])
 
     return (
         <div className='dashboard-main-content'>
             <div className='dashboard-ventas-container'>
-                {/* Sidebar de navegación */}
-                <div className='dashboard-ventas-sidebar'>
-                    <button 
-                        className={`dashboard-ventas-nav-btn ${activePage === 'home' ? 'active' : ''}`}
-                        onClick={() => navigate('/dashboard')}
-                    >
-                        ← Home
-                    </button>
-                    <button 
-                        className={`dashboard-ventas-nav-btn ${activePage === 'pedidos' ? 'active' : ''}`}
-                        onClick={() => navigate('/dashboard/pedidos')}
-                    >
-                        ← Pedidos
-                    </button>
-                    <button 
-                        className={`dashboard-ventas-nav-btn ${activePage === 'ventas' ? 'active' : ''}`}
-                        onClick={() => setActivePage('ventas')}
-                    >
-                        ← Ventas
-                    </button>
-                </div>
+                {/* topnav eliminado: la navegación global la gestiona App/Sidebar */}
 
                 {/* Contenido principal */}
                 <div className='dashboard-ventas-content'>
                     <div className='dashboard-ventas-header'>
                         <h1>Ventas</h1>
+                        <div className='dashboard-capacity'>Mesas: {mesasOcupadas}/{MAX_MESAS} ({((mesasOcupadas / MAX_MESAS) * 100).toFixed(1)}%)</div>
                     </div>
 
                     <div className='dashboard-ventas-grid'>
@@ -73,7 +107,7 @@ function DashboardVentas() {
                         <div className='dashboard-ventas-chart'>
                             <h3>Ventas</h3>
                             <ResponsiveContainer width="100%" height={300}>
-                                <LineChart data={ventasData}>
+                                <LineChart data={ventasDataState}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                                     <XAxis dataKey="date" stroke="#999" />
                                     <YAxis stroke="#999" />
@@ -89,7 +123,7 @@ function DashboardVentas() {
                         <div className='dashboard-ingresos-chart'>
                             <h3>Ingresos</h3>
                             <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={ingresosData}>
+                                <BarChart data={ingresosDataState}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
                                     <XAxis dataKey="date" stroke="#999" />
                                     <YAxis stroke="#999" />
@@ -103,10 +137,14 @@ function DashboardVentas() {
                         <div className='dashboard-flujo-caja'>
                             <h3>Flujo de caja</h3>
                             <div className='dashboard-flujo-list'>
-                                {flujoData.map((item, index) => (
+                                {flujoDataState.map((item, index) => (
                                     <div key={index} className='dashboard-flujo-item'>
                                         <div className='dashboard-flujo-icon'>
-                                            <div className='dashboard-flujo-circle'></div>
+                                            {item.monto.startsWith('+') ? (
+                                                <FaArrowUp size={18} color='#4ade80' />
+                                            ) : (
+                                                <FaArrowDown size={18} color='#ef4444' />
+                                            )}
                                         </div>
                                         <div className='dashboard-flujo-info'>
                                             <div className='dashboard-flujo-date'>{item.date}</div>
